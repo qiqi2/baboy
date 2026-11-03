@@ -1,0 +1,886 @@
+/* 萌萌数学乐园 - 幼儿专属甜美童趣风格 */
+:root {
+  --pink-light: #fff0f5;
+  --pink-main: #ff9aa2;
+  --pink-deep: #ff6b81;
+  --purple-main: #b5a8e3;
+  --purple-deep: #7d67b3;
+  --mint-main: #a8e6cf;
+  --mint-deep: #55b796;
+  --yellow-main: #ffeaa7;
+  --yellow-warm: #fdcb6e;
+  --card-bg: #ffffff;
+  --ink-main: #4a3e56;
+  --ink-light: #7b6f87;
+  --shadow-soft: 0 10px 30px rgba(125, 103, 179, 0.12);
+  --shadow-bubble: 0 6px 0 rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 20%, #ffffff 0%, var(--pink-light) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink-main);
+  overflow: hidden;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
+.screen {
+  display: none;
+  width: 100%;
+  height: 100%;
+  max-width: 980px;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: popIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 通用弹窗卡片 */
+.card {
+  background: var(--card-bg);
+  border-radius: 36px;
+  padding: 24px;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: var(--shadow-soft);
+  border: 4px solid #ffffff;
+  text-align: center;
+  position: relative;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* 开始界面 */
+.mascot {
+  font-size: clamp(54px, 12vw, 76px);
+  margin-bottom: 4px;
+  animation: jellyBounce 2.5s infinite ease-in-out;
+  display: inline-block;
+}
+
+@keyframes jellyBounce {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  30% { transform: translateY(-10px) scale(0.95, 1.05); }
+  50% { transform: translateY(0) scale(1.05, 0.95); }
+}
+
+.title {
+  font-size: clamp(28px, 6vw, 42px);
+  margin: 0;
+  font-weight: 900;
+  color: var(--pink-deep);
+  text-shadow: 0 2px 0 #fff;
+}
+
+.subtitle {
+  font-size: clamp(15px, 3.5vw, 19px);
+  margin: 6px 0 16px;
+  color: var(--ink-light);
+  font-weight: 600;
+}
+
+/* 模式选择切换器 */
+.mode-select-box {
+  background: #fdf5f8;
+  border-radius: 24px;
+  padding: 14px;
+  margin-bottom: 20px;
+  border: 2px dashed #ffd1dc;
+}
+.mode-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--purple-deep);
+  margin-bottom: 10px;
+}
+.mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+.mode-btn .mode-icon {
+  font-size: 32px;
+}
+.mode-btn strong {
+  display: block;
+  font-size: clamp(15px, 3.5vw, 17px);
+  color: var(--ink-main);
+}
+.mode-btn small {
+  display: block;
+  font-size: clamp(12px, 3vw, 13px);
+  color: var(--ink-light);
+  margin-top: 2px;
+}
+.mode-btn.active {
+  background: #fff0f4;
+  border-color: var(--pink-deep);
+  transform: scale(1.02);
+}
+
+/* 按钮规范 */
+.btn {
+  border: none;
+  border-radius: 22px;
+  font-size: clamp(17px, 4vw, 22px);
+  font-weight: 800;
+  cursor: pointer;
+  padding: 14px 24px;
+  width: 100%;
+  box-shadow: var(--shadow-bubble);
+  transition: transform 0.1s ease;
+}
+.btn:active {
+  transform: translateY(3px) scale(0.98);
+}
+.btn-big {
+  background: linear-gradient(135deg, var(--pink-main), var(--pink-deep));
+  color: #fff;
+  padding: 16px 28px;
+}
+.btn-secondary {
+  background: #f0eaf8;
+  color: var(--purple-deep);
+}
+
+/* 测验界面全屏容器 */
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--card-bg);
+  border-radius: 36px;
+  padding: 16px 20px;
+  box-shadow: var(--shadow-soft);
+  border: 4px solid #fff;
+}
+
+/* 顶栏 */
+.quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px dashed #f6eaf0;
+}
+.icon-btn {
+  background: #fdf5f8;
+  border: none;
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-bar {
+  flex: 1;
+  height: 14px;
+  background: #fce7ee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--mint-main), var(--mint-deep));
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.step-badge {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--purple-deep);
+  white-space: nowrap;
+}
+.star-badge {
+  background: #fff8e7;
+  color: #e67e22;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid #ffeaa7;
+}
+
+/* 测验主体排版（默认竖屏流） */
+.quiz-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.stage-card {
+  flex: 1;
+  background: linear-gradient(180deg, #fdf9fc, #fff0f5);
+  border-radius: 28px;
+  border: 3px solid #ffe0ea;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 16px;
+  min-height: 200px;
+}
+
+.voice-prompt {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.voice-btn {
+  background: #ffffff;
+  border: 2px solid var(--purple-main);
+  color: var(--purple-deep);
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.prompt-text {
+  font-size: clamp(15px, 3.2vw, 18px);
+  font-weight: 800;
+  color: var(--purple-deep);
+}
+
+/* 萌宝专属互动场景舞台 */
+.toddler-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toddler-scene {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 角色与物体大图标 */
+.actor-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.actor-box:active {
+  transform: scale(1.12);
+}
+.actor-avatar {
+  font-size: clamp(52px, 14vw, 86px);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+.actor-tag {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink-main);
+  margin-top: 4px;
+}
+
+/* 物品陈列槽 */
+.items-basket {
+  background: rgba(255, 255, 255, 0.8);
+  border: 3px dashed var(--pink-main);
+  border-radius: 24px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 140px;
+  min-height: 80px;
+}
+.item-unit {
+  font-size: clamp(40px, 10vw, 64px);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.item-unit:active {
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* 萌宝操作区：超大按钮 */
+.action-panel {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.toddler-controls {
+  width: 100%;
+}
+.toddler-choices {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  width: 100%;
+}
+.toddler-btn {
+  flex: 1;
+  max-width: 240px;
+  min-height: 76px;
+  border: 4px solid #fff;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff, #fff0f5);
+  box-shadow: 0 8px 18px rgba(255, 154, 162, 0.25), var(--shadow-bubble);
+  font-size: clamp(26px, 6vw, 36px);
+  font-weight: 900;
+  color: var(--pink-deep);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease;
+}
+.toddler-btn:active {
+  transform: scale(0.92);
+  background: #ffe3ec;
+}
+
+/* 大童算术模式样式 */
+.preschool-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.visual {
+  font-size: clamp(32px, 8vw, 48px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.equation {
+  font-size: clamp(36px, 9vw, 56px);
+  font-weight: 900;
+  color: var(--ink-main);
+}
+.input-display {
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 900;
+  color: var(--purple-deep);
+  background: #ffffff;
+  border: 3px solid #ffe0ea;
+  border-radius: 18px;
+  padding: 6px 36px;
+  min-height: 54px;
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.key {
+  border: none;
+  border-radius: 18px;
+  background: #fdf5f8;
+  color: var(--ink-main);
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 900;
+  padding: 12px 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+}
+.key:active {
+  transform: translateY(2px);
+}
+.key-ok {
+  background: linear-gradient(135deg, var(--mint-main), var(--mint-deep));
+  color: #fff;
+}
+.key-del {
+  background: #ffe8ee;
+  color: var(--pink-deep);
+}
+
+/* 反馈消息条 */
+.msg {
+  font-size: clamp(16px, 4vw, 22px);
+  font-weight: 900;
+  min-height: 28px;
+  margin-top: 8px;
+}
+.msg.ok { color: var(--mint-deep); }
+.msg.bad { color: var(--pink-deep); }
+
+/* 结算与勋章 */
+.result-card {
+  max-width: 500px;
+}
+.medal {
+  font-size: clamp(60px, 14vw, 84px);
+  margin-bottom: 8px;
+  animation: jellyBounce 2s infinite ease-in-out;
+}
+.result-title {
+  font-size: clamp(28px, 6vw, 36px);
+  margin: 0;
+  color: var(--pink-deep);
+}
+.stars-row {
+  font-size: clamp(34px, 8vw, 46px);
+  margin: 8px 0;
+  letter-spacing: 6px;
+}
+.reward-box {
+  background: #fcf5ff;
+  border: 2px dashed #dcd0ff;
+  border-radius: 20px;
+  padding: 14px;
+  margin: 16px 0;
+}
+.reward-icon {
+  font-size: 40px;
+}
+.reward-label {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--purple-deep);
+  margin-top: 4px;
+}
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 错题复习抽屉 */
+.review-card {
+  max-width: 580px;
+}
+.review-title {
+  margin: 0;
+  color: var(--purple-deep);
+}
+.review-sub {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin: 4px 0 14px;
+}
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+.review-item {
+  background: #fdf5f8;
+  border-radius: 18px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  border: 2px solid #ffe0ea;
+}
+.review-item .r-title {
+  font-weight: 800;
+  font-size: 16px;
+}
+.review-item .r-detail {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin-top: 4px;
+}
+
+/* 横屏平板优化：双栏排版布局（左侧舞台、右侧操作） */
+@media (orientation: landscape) and (min-height: 480px) {
+  .quiz-body {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .stage-card {
+    flex: 1.3;
+    min-height: auto;
+  }
+  .action-panel {
+    flex: 0.9;
+    align-items: center;
+  }
+  .toddler-choices {
+    flex-direction: column;
+  }
+  .toddler-btn {
+    max-width: 100%;
+    min-height: 80px;
+  }
+}
+
+/* 点读发音气泡胶囊 (Tap-to-Speak) */
+.sound-chip {
+  background: #ffffff;
+  color: var(--purple-deep);
+  border: 2px solid #e0d4f7;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(125, 103, 179, 0.12);
+  transition: transform 0.1s ease;
+  margin-top: 8px;
+}
+.sound-chip:active {
+  transform: scale(0.94);
+  background: #f4eeff;
+}
+
+/* 可点读交互物体 */
+.tap-word {
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.tap-word:active {
+  transform: scale(1.25);
+}
+
+.visual-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: clamp(32px, 8vw, 48px);
+}
+.v-op {
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 900;
+  color: var(--purple-deep);
+  margin: 0 4px;
+}
+
+/* 自选玩具箱抽屉模态框 */
+.toybox-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(74, 62, 86, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.toybox-modal.active {
+  display: flex;
+}
+.toybox-content {
+  background: #ffffff;
+  border-radius: 32px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 88vh;
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+  border: 4px solid #fff;
+  display: flex;
+  flex-direction: column;
+}
+.toybox-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toybox-title {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 900;
+  color: var(--purple-deep);
+}
+.icon-close {
+  background: #fdf5f8;
+  border: none;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.toybox-hint {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin: 8px 0 14px;
+}
+.toy-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  padding: 6px 4px 12px;
+}
+.toy-item {
+  background: #fdf5f8;
+  border: 2px solid #ffd1dc;
+  border-radius: 20px;
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.toy-item:active {
+  transform: scale(0.92);
+}
+.toy-item.selected {
+  background: #fff0f4;
+  border-color: var(--pink-deep);
+  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.25);
+}
+.toy-item.selected::after {
+  content: '✔';
+  position: absolute;
+  top: 4px; right: 6px;
+  font-size: 12px;
+  color: var(--pink-deep);
+  font-weight: 900;
+}
+.toy-emoji {
+  font-size: 32px;
+}
+.toy-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-main);
+  margin-top: 4px;
+  text-align: center;
+}
+.toybox-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* 小小出题官场景 */
+.maker-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.maker-plate {
+  width: 90%;
+  max-width: 340px;
+  min-height: 180px;
+  background: radial-gradient(circle, #ffffff 60%, #fff6f9 100%);
+  border: 4px dashed #ff9aa2;
+  border-radius: 36px;
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.04), 0 8px 20px rgba(255, 154, 162, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+}
+.plate-hint {
+  font-size: 14px;
+  color: var(--ink-light);
+  font-weight: 700;
+}
+.plate-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: clamp(36px, 9vw, 52px);
+  width: 100%;
+}
+.plate-item {
+  cursor: pointer;
+  animation: popIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.plate-item:active {
+  transform: scale(0.85);
+}
+.maker-counter {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--purple-deep);
+  background: #fdf5f8;
+  padding: 4px 16px;
+  border-radius: 16px;
+  border: 2px solid #ffd1dc;
+}
+
+/* 出题官候选托盘 */
+.maker-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.maker-tray {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 2px;
+  scrollbar-width: none;
+}
+.tray-item {
+  min-width: 64px;
+  height: 64px;
+  background: #ffffff;
+  border: 3px solid #ffe0ea;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  box-shadow: var(--shadow-bubble);
+  flex-shrink: 0;
+  transition: transform 0.1s ease;
+}
+.tray-item:active {
+  transform: scale(0.9);
+}
+.maker-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* 考家长神秘揭晓卡片 */
+.reveal-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(74, 62, 86, 0.55);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.reveal-modal.active {
+  display: flex;
+}
+.reveal-card {
+  background: #ffffff;
+  border-radius: 36px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+  border: 4px solid #fff;
+  animation: popIn 0.3s ease;
+}
+.reveal-header {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--purple-deep);
+}
+.reveal-question {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 900;
+  color: var(--ink-main);
+  margin: 8px 0 16px;
+}
+.mystery-box {
+  background: linear-gradient(135deg, #ffd1dc, #ff9aa2);
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 900;
+  padding: 36px 12px;
+  border-radius: 28px;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+.ans-items {
+  font-size: 54px;
+  margin-bottom: 8px;
+}
+.ans-text {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--pink-deep);
+  margin-bottom: 20px;
+}
+
+

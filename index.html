@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>萌萌数学 - 幼儿数学启蒙乐园</title>
+<link rel="stylesheet" href="css/style.css?v=1.0.3">
+</head>
+<body>
+  <div class="stage">
+    <!-- 开始界面 -->
+    <section id="screen-start" class="screen active">
+      <div class="card start-card">
+        <div class="mascot">🐰✨</div>
+        <h1 class="title">萌萌数学乐园</h1>
+        <p class="subtitle">幼儿量感与数学启蒙</p>
+        
+        <!-- 模式选择 -->
+        <div class="mode-select-box">
+          <div class="mode-title">请选择探索玩法：</div>
+          <div class="mode-options">
+            <button class="mode-btn active" data-mode="toddler">
+              <span class="mode-icon">🍼</span>
+              <span class="mode-text">
+                <strong>萌宝启蒙阶 (1~2岁)</strong>
+                <small>无算式 · 喂小兔 · 收集装篮 · 瞬视比多少</small>
+              </span>
+            </button>
+            <button class="mode-btn" data-mode="preschool">
+              <span class="mode-icon">✏️</span>
+              <span class="mode-text">
+                <strong>算术进阶阶 (4~6岁)</strong>
+                <small>实物加减 · 补数填空 · 比大小 · 键盘小测验</small>
+              </span>
+            </button>
+            <button class="mode-btn" data-mode="maker">
+              <span class="mode-icon">🎨</span>
+              <span class="mode-text">
+                <strong>小小出题官 (亲子共创)</strong>
+                <small>自由摆放宝物 · 考考爸爸妈妈 · 惊喜揭晓</small>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="btn-group-row">
+          <button id="btn-open-toybox" class="btn btn-secondary">🎒 挑选我的宝物 (<span id="toy-count-badge">全部随机</span>)</button>
+          <button id="btn-start" class="btn btn-big pulse">开启趣味探索 🌟</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自选玩具箱抽屉 (模态框) -->
+    <div id="toybox-modal" class="toybox-modal">
+      <div class="toybox-content">
+        <div class="toybox-head">
+          <div class="toybox-title">🎒 挑选喜欢的宝物</div>
+          <button id="btn-close-toybox" class="icon-close">✕</button>
+        </div>
+        <p class="toybox-hint">点击选中喜欢的道具（优先在题目中出现），也可随时重置为全选：</p>
+        <div class="toy-grid" id="toy-grid"></div>
+        <div class="toybox-actions">
+          <button id="btn-reset-toybox" class="btn btn-secondary">恢复全部道具 🔄</button>
+          <button id="btn-confirm-toybox" class="btn btn-big">选好啦，去探索 ✨</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 测验界面 -->
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-container">
+        <!-- 顶栏：进度与状态 -->
+        <div class="quiz-header">
+          <button id="btn-quit" class="icon-btn" title="返回主页">🏠</button>
+          <div class="progress-wrap">
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div class="step-badge">
+              第 <span id="q-num">1</span> / <span id="q-total">15</span> 关
+            </div>
+          </div>
+          <div class="star-badge" id="star-badge">⭐ <span id="star-count">0</span></div>
+        </div>
+
+        <!-- 主内容区（横屏下左右分栏） -->
+        <div class="quiz-body">
+          <!-- 舞台区域 -->
+          <div class="stage-card" id="stage-card">
+            <div class="voice-prompt" id="voice-prompt">
+              <button id="btn-speak" class="voice-btn">🔊 听提示</button>
+              <span id="prompt-text" class="prompt-text">看一看</span>
+            </div>
+
+            <!-- 1. 萌宝互动场景（1~2岁专享） -->
+            <div id="toddler-stage" class="toddler-stage">
+              <div id="toddler-scene" class="toddler-scene"></div>
+            </div>
+
+            <!-- 2. 算术进阶卡片（4~6岁专享） -->
+            <div id="preschool-stage" class="preschool-stage" style="display:none;">
+              <div class="visual" id="visual"></div>
+              <div class="equation" id="equation">？ + ？ = ？</div>
+              <div class="input-display" id="input-display">_</div>
+            </div>
+
+            <!-- 3. 小小出题官场景（亲子共创专享） -->
+            <div id="maker-stage" class="maker-stage" style="display:none;">
+              <div class="maker-plate" id="maker-plate">
+                <div class="plate-hint" id="plate-hint">小手点下方宝物，放到盘子里吧~</div>
+                <div class="plate-items" id="plate-items"></div>
+              </div>
+              <div class="maker-counter" id="maker-counter">已摆放：0 个</div>
+            </div>
+
+            <div id="msg" class="msg"></div>
+          </div>
+
+          <!-- 交互操作区 -->
+          <div class="action-panel">
+            <!-- 萌宝操作区：超大图形选项 -->
+            <div id="toddler-controls" class="toddler-controls">
+              <div class="toddler-choices" id="toddler-choices"></div>
+            </div>
+
+            <!-- 大童操作区：虚拟九宫格数字键盘 -->
+            <div id="preschool-controls" class="preschool-controls" style="display:none;">
+              <div class="numpad" id="numpad">
+                <button class="key" data-key="1">1</button>
+                <button class="key" data-key="2">2</button>
+                <button class="key" data-key="3">3</button>
+                <button class="key" data-key="4">4</button>
+                <button class="key" data-key="5">5</button>
+                <button class="key" data-key="6">6</button>
+                <button class="key" data-key="7">7</button>
+                <button class="key" data-key="8">8</button>
+                <button class="key" data-key="9">9</button>
+                <button class="key key-del" data-key="del">⌫</button>
+                <button class="key" data-key="0">0</button>
+                <button class="key key-ok" data-key="ok">✔</button>
+              </div>
+            </div>
+
+            <!-- 出题官操作区：选宝物与考考家长大按钮 -->
+            <div id="maker-controls" class="maker-controls" style="display:none;">
+              <div class="maker-tray" id="maker-tray"></div>
+              <div class="maker-buttons">
+                <button id="btn-clear-plate" class="btn btn-secondary">清空盘子 🍃</button>
+                <button id="btn-challenge-parent" class="btn btn-big">考考爸爸妈妈 💖</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 考家长神秘揭晓卡片 (弹窗) -->
+    <div id="reveal-modal" class="reveal-modal">
+      <div class="reveal-card">
+        <div class="reveal-header">🤫 请爸爸妈妈闭上眼睛猜一猜：</div>
+        <div class="reveal-question">盘子里一共有几个宝物呀？</div>
+        <div class="reveal-cover" id="reveal-cover">
+          <div class="mystery-box">❓ 猜一猜 ❓</div>
+          <button id="btn-do-reveal" class="btn btn-big pulse">点击惊喜揭晓 🎉</button>
+        </div>
+        <div class="reveal-answer" id="reveal-answer" style="display:none;">
+          <div class="ans-items" id="ans-items"></div>
+          <div class="ans-text" id="ans-text">3 颗草莓 Strawberries!</div>
+          <button id="btn-maker-next" class="btn btn-big">再出一道题 🎈</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <section id="screen-result" class="screen">
+      <div class="card result-card">
+        <div class="medal" id="medal">🏆</div>
+        <h2 class="result-title" id="result-title">太棒啦！</h2>
+        <div class="stars-row" id="stars-row">⭐⭐⭐</div>
+        <p class="result-desc" id="result-text">宝宝获得了所有星星，真了不起！</p>
+        
+        <div class="reward-box">
+          <div class="reward-icon" id="reward-icon">🎁</div>
+          <div class="reward-label" id="reward-label">解锁萌兔勋章</div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-review" class="btn btn-secondary">回顾动画 🔍</button>
+          <button id="btn-restart" class="btn btn-big">再玩一次 🎈</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 轻量动画复习界面 -->
+    <section id="screen-review" class="screen">
+      <div class="card review-card">
+        <h2 class="review-title">趣味道具回顾</h2>
+        <p class="review-sub">点击卡片看实物增减动画</p>
+        <div id="review-list" class="review-list"></div>
+        <button id="btn-back-result" class="btn btn-big">返回奖状 🎀</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/app.js?v=1.0.3"></script>
+</body>
+</html>
